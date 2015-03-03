@@ -4,6 +4,7 @@ var cool = require('cool-ascii-faces');
 var pg = require('pg');
 var multer = require('multer');
 var bodyParser = require('body-parser');
+var zlib = require('zlib');
 
 var aws      = require('aws-sdk'),
     fs       = require('fs');
@@ -78,32 +79,37 @@ app.post('/uploadFacebook', function(req, res) {
     imageURL = req.body.imageURL;
     // Create the streams
     var read = fs.createReadStream(UPLOAD_PATH + "tip_pointer_up.png");
-    var upload = s3Stream.upload({
-        "Bucket": S3_BUCKET,
-        "Key": "image.png"
-    });
+    // var upload = s3Stream.upload({
+    //     "Bucket": S3_BUCKET,
+    //     "Key": "image.png"
+    // });
+    //
+    // // Optional configuration
+    // upload.maxPartSize(20971520); // 20 MB
+    // upload.concurrentParts(5);
+    //
+    // // Handle errors.
+    // upload.on('error', function (error) {
+    //   console.log(error);
+    // });
+    //
+    // // Handle progress.
+    // upload.on('part', function (details) {
+    //   console.log(details);
+    // });
+    //
+    // // Handle upload completion.
+    // upload.on('uploaded', function (details) {
+    //   console.log(details);
+    // });
+    //
+    // // Pipe the incoming filestream through compression, and up to S3.
+    // read.pipe(upload);
 
-    // Optional configuration
-    upload.maxPartSize(20971520); // 20 MB
-    upload.concurrentParts(5);
-
-    // Handle errors.
-    upload.on('error', function (error) {
-      console.log(error);
-    });
-
-    // Handle progress.
-    upload.on('part', function (details) {
-      console.log(details);
-    });
-
-    // Handle upload completion.
-    upload.on('uploaded', function (details) {
-      console.log(details);
-    });
-
-    // Pipe the incoming filestream through compression, and up to S3.
-    read.pipe(upload);
+    var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
+    s3obj.upload({Body: read}).
+      on('httpUploadProgress', function(evt) { console.log(evt); }).
+      send(function(err, data) { console.log(err, data) });
 });
 
 app.listen(app.get('port'), function() {
