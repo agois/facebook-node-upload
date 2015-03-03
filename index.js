@@ -76,7 +76,7 @@ app.post('/upload', multerFiles, function(req, res) {
 
 // handle upload to facebook
 app.post('/uploadFacebook', function(req, res) {
-    imageURL = new String(req.body.imageURL);
+    imageURL = "" + req.body.imageURL;
 
     // test imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
     http.get(url.parse(imageURL), function(response) {
