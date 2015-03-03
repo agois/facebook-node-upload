@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 var zlib = require('zlib');
 var aws      = require('aws-sdk'),
     fs       = require('fs');
-var http = require('http');
 var url = require('url')
+var request = require('request');
 
 var S3_ACCESS_KEY = process.env.S3_KEY;
 var S3_SECRET_KEY = process.env.S3_SECRET;
@@ -80,20 +80,33 @@ app.post('/upload', multerFiles, function(req, res) {
 // handle upload to facebook
 app.post('/uploadFacebook', function(req, res) {
     imageURL = "" + req.body.imageURL;
-    console.log("Got imageURL=" + imageURL);
+
+    request('http://www.google.com', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            // console.log(body) // Show the HTML for the Google homepage.
+
+            // Send to amazon S3
+            var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
+            s3obj.upload({Body: body}).
+            on('httpUploadProgress', function(evt) { console.log(evt); }).
+            send(function(err, data) { console.log(err, data) });
+
+        }
+    })
+
 
     //imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
-    http.get(imageURL, function(response) {
-        // Send to amazon S3
-        var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
-        s3obj.upload({Body: response}).
-          on('httpUploadProgress', function(evt) { console.log(evt); }).
-          send(function(err, data) { console.log(err, data) });
-
-        // Download to file
-    //   response.pipe(file);
-    });
-
+    // http.get(imageURL, function(response) {
+    //     // Send to amazon S3
+    //     var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
+    //     s3obj.upload({Body: response}).
+    //       on('httpUploadProgress', function(evt) { console.log(evt); }).
+    //       send(function(err, data) { console.log(err, data) });
+    //
+    //     // Download to file
+    // //   response.pipe(file);
+    // });
+    //
     // Send local file to amazon S3
     // Create the streams
     // var read = fs.createReadStream(UPLOAD_PATH + "tip_pointer_up.png");
