@@ -45,6 +45,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+// create application/json parser
+var jsonParser = bodyParser.json()
+
 
 // ENDPOINTS
 app.get('/', function(request, response) {
@@ -75,9 +78,9 @@ app.post('/upload', multerFiles, function(req, res) {
 });
 
 // handle upload to facebook
-app.post('/uploadFacebook', function(req, res) {
+app.post('/uploadFacebook', jsonParser, function(req, res) {
     imageURL = "" + req.body.imageURL;
-    console.log("Got imageURL=" + req);
+    console.log("Got imageURL=" + imageURL);
 
     //imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
     http.get(imageURL, function(response) {
