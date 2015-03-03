@@ -78,7 +78,7 @@ app.post('/upload', multerFiles, function(req, res) {
 });
 
 // handle upload to facebook
-app.post('/uploadFacebook', jsonParser, function(req, res) {
+app.post('/uploadFacebook', function(req, res) {
     imageURL = "" + req.body.imageURL;
     console.log("Got imageURL=" + imageURL);
 
