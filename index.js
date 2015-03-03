@@ -79,7 +79,7 @@ app.post('/uploadFacebook', function(req, res) {
     var imageURL = req.body.imageURL;
 
     // test imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
-    http.get(url.parse(imageURL), function(response) {
+    http.get(url.parse(req.body.imageURL), function(response) {
         // Send to amazon S3
         var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
         s3obj.upload({Body: response}).
