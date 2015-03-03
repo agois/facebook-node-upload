@@ -14,6 +14,7 @@ var S3_SECRET_KEY = process.env.S3_SECRET;
 var S3_BUCKET = process.env.S3_BUCKET
 
 aws.config.update({accessKeyId: S3_ACCESS_KEY, secretAccessKey: S3_SECRET_KEY});
+aws.config.httpOptions = {timeout: 5000};
 
 s3Stream = require('s3-upload-stream')(new aws.S3());
 
@@ -83,6 +84,10 @@ app.post('/uploadFacebook', function(req, res) {
         "Bucket": S3_BUCKET,
         "Key": "image.png"
     });
+
+    // Optional configuration
+    upload.maxPartSize(20971520); // 20 MB
+    upload.concurrentParts(5);
 
     // Handle errors.
     upload.on('error', function (error) {
