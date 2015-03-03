@@ -5,20 +5,18 @@ var pg = require('pg');
 var multer = require('multer');
 var bodyParser = require('body-parser');
 var zlib = require('zlib');
-
 var aws      = require('aws-sdk'),
     fs       = require('fs');
 
 var S3_ACCESS_KEY = process.env.S3_KEY;
 var S3_SECRET_KEY = process.env.S3_SECRET;
 var S3_BUCKET = process.env.S3_BUCKET
+var UPLOAD_PATH = "./uploads/";
+
 
 aws.config.update({accessKeyId: S3_ACCESS_KEY, secretAccessKey: S3_SECRET_KEY});
 aws.config.httpOptions = {timeout: 60000};
 
-s3Stream = require('s3-upload-stream')(new aws.S3());
-
-var UPLOAD_PATH = "./uploads/";
 
 
 // configure multer for upload management
@@ -79,39 +77,13 @@ app.post('/uploadFacebook', function(req, res) {
     imageURL = req.body.imageURL;
     // Create the streams
     var read = fs.createReadStream(UPLOAD_PATH + "tip_pointer_up.png");
-    // var upload = s3Stream.upload({
-    //     "Bucket": S3_BUCKET,
-    //     "Key": "image.png"
-    // });
-    //
-    // // Optional configuration
-    // upload.maxPartSize(20971520); // 20 MB
-    // upload.concurrentParts(5);
-    //
-    // // Handle errors.
-    // upload.on('error', function (error) {
-    //   console.log(error);
-    // });
-    //
-    // // Handle progress.
-    // upload.on('part', function (details) {
-    //   console.log(details);
-    // });
-    //
-    // // Handle upload completion.
-    // upload.on('uploaded', function (details) {
-    //   console.log(details);
-    // });
-    //
-    // // Pipe the incoming filestream through compression, and up to S3.
-    // read.pipe(upload);
-
-    res.send("Upload Ok!");
 
     var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
     s3obj.upload({Body: read}).
       on('httpUploadProgress', function(evt) { console.log(evt); }).
       send(function(err, data) { console.log(err, data) });
+
+    res.send("Upload Ok!");
 });
 
 app.listen(app.get('port'), function() {
