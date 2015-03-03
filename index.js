@@ -4,12 +4,20 @@ var cool = require('cool-ascii-faces');
 var pg = require('pg');
 var multer = require('multer');
 
-var AWS      = require('aws-sdk'),
+var aws      = require('aws-sdk'),
     zlib     = require('zlib'),
-    fs       = require('fs'),
-    s3Stream = require('s3-upload-stream')(new AWS.S3());
+    fs       = require('fs');
+
+var S3_ACCESS_KEY = process.env.S3_KEY;
+var S3_SECRET_KEY = process.env.S3_SECRET;
+var S3_BUCKET = process.env.S3_BUCKET
+
+aws.config.update({accessKeyId: S3_ACCESS_KEY, secretAccessKey: S3_SECRET_KEY});
+
+s3Stream = require('s3-upload-stream')(new aws.S3());
 
 var UPLOAD_PATH = "./uploads/";
+
 
 // configure multer for upload management
 var fileUploadCompleted = false;
@@ -59,9 +67,34 @@ app.post('/upload', multerFiles, function(req, res) {
     }
 });
 
-// handle uploads
+// handle upload to facebook
 app.post('/uploadFacebook', function(req, res) {
     imageURL = req.body.imageURL;
+    // Create the streams
+    var read = fs.createReadStream(UPLOAD_PATH + "tip_pointer_up.png");
+    var compress = zlib.createGzip();
+    var upload = s3Stream.upload({
+        "Bucket": S3_BUCKET,
+        "Key": "image.png"
+    });
+
+    // Handle errors.
+    upload.on('error', function (error) {
+      console.log(error);
+    });
+
+    // Handle progress.
+    upload.on('part', function (details) {
+      console.log(details);
+    });
+
+    // Handle upload completion.
+    upload.on('uploaded', function (details) {
+      console.log(details);
+    });
+
+    // Pipe the incoming filestream through compression, and up to S3.
+    read.pipe(compress).pipe(upload);
 });
 
 app.listen(app.get('port'), function() {
