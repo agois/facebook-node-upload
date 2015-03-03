@@ -37,6 +37,7 @@ var multerFiles = multer({ dest: UPLOAD_PATH,
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
+app.use(express.bodyParser());
 
 
 // ENDPOINTS
