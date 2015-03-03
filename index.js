@@ -77,14 +77,19 @@ app.post('/upload', multerFiles, function(req, res) {
 app.post('/uploadFacebook', function(req, res) {
     imageURL = req.body.imageURL;
 
-    http.get("http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg", function(response) {
+    // test imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
+    http.get(imageURL, function(response) {
+        // Send to amazon S3
         var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
         s3obj.upload({Body: response}).
           on('httpUploadProgress', function(evt) { console.log(evt); }).
           send(function(err, data) { console.log(err, data) });
+
+        // Download to file
     //   response.pipe(file);
     });
 
+    // Send local file to amazon S3
     // Create the streams
     // var read = fs.createReadStream(UPLOAD_PATH + "tip_pointer_up.png");
 
