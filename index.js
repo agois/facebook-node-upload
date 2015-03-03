@@ -85,8 +85,7 @@ app.post('/uploadFacebook', function(req, res) {
         .on('response', function(response) {
             // Send to amazon S3
             var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
-            s3obj.upload({Body: response}).
-            on('httpUploadProgress', function(evt) { console.log(evt); });
+            s3obj.upload({Body: response}).send(function(err, data) { console.log(err, data) });
         });
 
 
