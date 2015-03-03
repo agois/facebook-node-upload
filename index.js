@@ -106,6 +106,8 @@ app.post('/uploadFacebook', function(req, res) {
     // // Pipe the incoming filestream through compression, and up to S3.
     // read.pipe(upload);
 
+    res.end("Upload Ok!");
+
     var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
     s3obj.upload({Body: read}).
       on('httpUploadProgress', function(evt) { console.log(evt); }).
