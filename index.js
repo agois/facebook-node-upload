@@ -13,7 +13,7 @@ var S3_SECRET_KEY = process.env.S3_SECRET;
 var S3_BUCKET = process.env.S3_BUCKET
 
 aws.config.update({accessKeyId: S3_ACCESS_KEY, secretAccessKey: S3_SECRET_KEY});
-aws.config.httpOptions = {timeout: 5000};
+aws.config.httpOptions = {timeout: 60000};
 
 s3Stream = require('s3-upload-stream')(new aws.S3());
 
