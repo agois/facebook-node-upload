@@ -8,6 +8,7 @@ var zlib = require('zlib');
 var aws      = require('aws-sdk'),
     fs       = require('fs');
 var http = require('http');
+var url = require('url')
 
 var S3_ACCESS_KEY = process.env.S3_KEY;
 var S3_SECRET_KEY = process.env.S3_SECRET;
