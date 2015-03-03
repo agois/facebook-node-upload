@@ -81,7 +81,7 @@ app.post('/upload', multerFiles, function(req, res) {
 app.post('/uploadFacebook', function(req, res) {
     imageURL = "" + req.body.imageURL;
 
-    request('http://www.google.com', function (error, response, body) {
+    request(imageURL, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             // console.log(body) // Show the HTML for the Google homepage.
 
