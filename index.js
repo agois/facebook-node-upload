@@ -103,7 +103,7 @@ app.post('/uploadFacebook', function(req, res) {
     });
 
     // Pipe the incoming filestream through compression, and up to S3.
-    read.pipe(read).pipe(upload);
+    read.pipe(upload);
 });
 
 app.listen(app.get('port'), function() {
