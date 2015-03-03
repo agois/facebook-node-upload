@@ -4,6 +4,11 @@ var cool = require('cool-ascii-faces');
 var pg = require('pg');
 var multer = require('multer');
 
+var AWS      = require('aws-sdk'),
+    zlib     = require('zlib'),
+    fs       = require('fs');
+    s3Stream = require('s3-upload-stream')(new AWS.S3()),
+
 var UPLOAD_PATH = "./uploads/";
 
 // configure multer for upload management
