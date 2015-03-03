@@ -6,7 +6,6 @@ var multer = require('multer');
 var bodyParser = require('body-parser');
 
 var aws      = require('aws-sdk'),
-    zlib     = require('zlib'),
     fs       = require('fs');
 
 var S3_ACCESS_KEY = process.env.S3_KEY;
@@ -79,7 +78,6 @@ app.post('/uploadFacebook', function(req, res) {
     imageURL = req.body.imageURL;
     // Create the streams
     var read = fs.createReadStream(UPLOAD_PATH + "tip_pointer_up.png");
-    var compress = zlib.createGzip();
     var upload = s3Stream.upload({
         "Bucket": S3_BUCKET,
         "Key": "image.png"
@@ -105,7 +103,7 @@ app.post('/uploadFacebook', function(req, res) {
     });
 
     // Pipe the incoming filestream through compression, and up to S3.
-    read.pipe(compress).pipe(upload);
+    read.pipe(read).pipe(upload);
 });
 
 app.listen(app.get('port'), function() {
