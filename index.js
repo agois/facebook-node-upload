@@ -87,7 +87,7 @@ app.post('/uploadFacebook', function(req, res) {
     protocol.get(imageURL, function(response) {
         // Send to amazon S3
         var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image' + process.env.IMG_KEY + '.jpg'}});
-        process.env.IMG_KEY += 1;
+        process.env.IMG_KEY = "" + (parseInt(process.env.IMG_KEY) + 1);
         s3obj.upload({Body: response}).
           on('httpUploadProgress', function(evt) { console.log(evt); }).
           send(function(err, data) { console.log(err, data) });
