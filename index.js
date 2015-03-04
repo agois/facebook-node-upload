@@ -8,7 +8,6 @@ var zlib = require('zlib');
 var aws      = require('aws-sdk'),
     fs       = require('fs');
 var url = require('url')
-var request = require('request');
 
 var S3_ACCESS_KEY = process.env.S3_KEY;
 var S3_SECRET_KEY = process.env.S3_SECRET;
@@ -81,25 +80,17 @@ app.post('/upload', multerFiles, function(req, res) {
 app.post('/uploadFacebook', function(req, res) {
     imageURL = req.body.imageURL;
 
-    request(imageURL)
-        .on('response', function(response) {
-            // Send to amazon S3
-            var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
-            s3obj.upload({Body: response}).send(function(err, data) { console.log(err, data) });
-        });
+    imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
+    https.get(imageURL, function(response) {
+        // Send to amazon S3
+        var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
+        s3obj.upload({Body: response}).
+          on('httpUploadProgress', function(evt) { console.log(evt); }).
+          send(function(err, data) { console.log(err, data) });
 
-
-    //imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
-    // http.get(imageURL, function(response) {
-    //     // Send to amazon S3
-    //     var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
-    //     s3obj.upload({Body: response}).
-    //       on('httpUploadProgress', function(evt) { console.log(evt); }).
-    //       send(function(err, data) { console.log(err, data) });
-    //
-    //     // Download to file
-    // //   response.pipe(file);
-    // });
+        // Download to file
+    //   response.pipe(file);
+    });
     //
     // Send local file to amazon S3
     // Create the streams

@@ -12,7 +12,6 @@
     "cool-ascii-faces": "~1.3.x",
     "multer": "^0.1.8",
     "aws-sdk": "*",
-    "request": "*",
     "body-parser": "*"
   },
   "engines": {
