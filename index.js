@@ -80,10 +80,10 @@ app.post('/upload', multerFiles, function(req, res) {
 
 // handle upload to facebook
 app.post('/uploadFacebook', function(req, res) {
-    imageURL = "" + req.body.imageURL;
+    imageURL = req.body.imageURL;
 
     // imageURL="http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg"
-    var protocol = (imageURL.startsWith('https:') ? https : http);
+    var protocol = (new String(imageURL).startsWith('https:') ? https : http);
     protocol.get(imageURL, function(response) {
         // Send to amazon S3
         var s3obj = new aws.S3({params: {Bucket: S3_BUCKET, Key: 'image.png'}});
